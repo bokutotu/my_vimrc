@@ -31,6 +31,17 @@ syntax on
 " インデントを良い感じにする
 " set autoindent
 set tabstop=4
+" JS or HTMLの時だけTab幅を変える
+augroup fileTypeIndent
+    autocmd!
+    autocmd BufNewFile,BufRead *.py setlocal tabstop=4 softtabstop=4 shiftwidth=4
+    autocmd BufNewFile,BufRead *.rb setlocal tabstop=2 softtabstop=2 shiftwidth=2
+    autocmd BufRead,BufNewFile *.js setlocal tabstop=2 softtabstop=2 shiftwidth=2
+    autocmd BufRead,BufNewFile *.tsx setlocal tabstop=2 softtabstop=2 shiftwidth=2
+    autocmd BufRead,BufNewFile *.ts setlocal tabstop=2 softtabstop=2 shiftwidth=2
+    autocmd BufRead,BufNewFile *.html setlocal tabstop=2 softtabstop=2 shiftwidth=2
+    autocmd BufRead,BufNewFile *.css setlocal tabstop=2 softtabstop=2 shiftwidth=2
+augroup END
 " set shiftwidth=4
 
 " ESC 二回でハイライト削除
@@ -66,6 +77,24 @@ call plug#begin('~/.vim/plugged')
     Plug 'vim-airline/vim-airline-themes'
     Plug 'itchyny/landscape.vim'
 
+    Plug 'rust-lang/rust.vim'
+
+    Plug 'mattn/emmet-vim'
+    Plug 'tyru/open-browser.vim'
+    Plug 'mattn/webapi-vim'
+    Plug 'tell-k/vim-browsereload-mac'
+    Plug 'hail2u/vim-css3-syntax'
+    " Plug 'taichouchou2/html5.vim'
+    Plug 'kchmck/vim-coffee-script'
+    " Use release branch (recommend)
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+    " Or build from source code by using yarn: https://yarnpkg.com
+    Plug 'neoclide/coc.nvim', {'branch': 'master', 'do': 'yarn install --frozen-lockfile'}
+
+    Plug 'leafgarland/typescript-vim'
+    Plug 'peitalin/vim-jsx-typescript'
+
     " 補完
     function! BuildYCM(info)
     if a:info.status == 'installed' || a:info.force
@@ -78,6 +107,9 @@ call plug#begin('~/.vim/plugged')
 call plug#end()
 
 let python_highlight_all=1
+
+" emmet
+let g:user_emmet_leader_key='<c-t>'
 
 " YCM
 
@@ -148,9 +180,25 @@ let g:airline_symbols.linenr = ''
 nmap <C-p> <Plug>AirlineSelectPrevTab
 nmap <C-n> <Plug>AirlineSelectNextTab
 
+" rust
+let g:rust_clip_command = 'xclip -selection clipboard'
+" for mac
+" let g:rust_clip_command = 'pbcopy'
+
 " いまいる場所を強調
 " 行を強調表示
 set cursorline
 
 " 列を強調表示
 set cursorcolumn
+
+" jjでescになる
+inoremap <silent> jj <ESC>
+
+
+" HTML
+augroup HTMLANDXML
+  autocmd!
+  autocmd Filetype xml inoremap <buffer> </ </<C-x><C-o>
+  autocmd Filetype html inoremap <buffer> </ </<C-x><C-o>
+augroup END
