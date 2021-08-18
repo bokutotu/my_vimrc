@@ -138,6 +138,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'leafgarland/typescript-vim'
     Plug 'peitalin/vim-jsx-typescript'
 
+    Plug 'ctrlpvim/ctrlp.vim'
+
 
 call plug#end()
 
