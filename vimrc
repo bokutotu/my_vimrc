@@ -1,6 +1,10 @@
 " 行番号を表示する
 set number
 
+" 1行あたり80文字超えたラインでハイライトする
+set colorcolumn=80
+highlight ColorColumn guibg=#202020 ctermbg=yellow
+
 " 検索パターンが一致する時候補すべてハイライト
 set hlsearch
 
@@ -40,6 +44,64 @@ set cursorcolumn
 inoremap <silent> jj <ESC>
 
 
+" coc vim の設定
+set nobackup
+set nowritebackup
+
+set cmdheight=2
+
+set shortmess+=c
+
+" Always show the signcolumn, otherwise it would shift the text each time
+" diagnostics appear/become resolved.
+if has("nvim-0.5.0") || has("patch-8.1.1564")
+  " Recently vim can merge signcolumn and number column into one
+  set signcolumn=number
+else
+  set signcolumn=yes
+endif
+
+" Use tab for trigger completion with characters ahead and navigate.
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Use <c-space> to trigger completion.
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
+
+" Make <CR> auto-select the first completion item and notify coc.nvim to
+" format on enter, <cr> could be remapped by other vim plugin
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
+
+
+
 " visulaモードでインデント調整後に選択範囲を開放しない
 vnoremap > >gv
 vnoremap < <gv
@@ -51,6 +113,7 @@ nnoremap sl <C-w>l
 nnoremap sh <C-w>h
 nnoremap ss :<C-u>sp<CR><C-w>j
 nnoremap sv :<C-u>vs<CR><C-w>l
+
 
 " インデントを良い感じにする
 " set autoindent
@@ -111,9 +174,6 @@ call plug#begin('~/.vim/plugged')
     " 括弧補完
     Plug 'cohama/lexima.vim'
     
-    " language serverのやつ
-    Plug 'rust-lang/rust.vim'
-
     Plug 'scrooloose/nerdtree'
 
     Plug 'tpope/vim-commentary'
@@ -185,6 +245,9 @@ nmap <C-n> <Plug>AirlineSelectNextTab
 
 " rust
 let g:rust_clip_command = 'xclip -selection clipboard'
+let g:rustfmt_autosave = 1
+filetype plugin indent on
+
 " for mac
 " let g:rust_clip_command = 'pbcopy'
 
@@ -197,7 +260,7 @@ augroup HTMLANDXML
 augroup END
 
 " tabnine
-set rtp+=~/tabnine-vim
+" set rtp+=~/tabnine-vim
 
 " Coc vim
 "LightLineにcoc.nvimのステータスを載せます
@@ -231,3 +294,19 @@ nmap <silent> <space>rf <Plug>(coc-references)
 nmap <silent> <space>rn <Plug>(coc-rename)
 "スペースfmtでFormat
 nmap <silent> <space>fmt <Plug>(coc-format)
+
+let g:ctrlp_map = '<c-f>'
+let g:ctrlp_cmd = 'CtrlP'
+
+let g:ctrlp_working_path_mode = 'ra'
+
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " MacOSX/Linux
+set wildignore+=*\\tmp\\*,*.swp,*.zip,*.exe  " Windows
+
+let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\v[\/]\.(git|hg|svn)$',
+  \ 'file': '\v\.(exe|so|dll)$',
+  \ 'link': 'some_bad_symbolic_links',
+  \ }
+
