@@ -1,3 +1,6 @@
+set tw=0
+set textwidth=0 
+
 " 行番号を表示する
 set number
 
@@ -40,9 +43,11 @@ set cursorline
 " 列を強調表示
 set cursorcolumn
 
-" jjでescになる
-inoremap <silent> jj <ESC>
+" jjでescと保存になる
+inoremap <silent> jj <ESC>:w<CR>
 
+" <space>wで保存
+nnoremap <silent><Space>w :w<CR>
 
 " coc vim の設定
 set nobackup
@@ -295,7 +300,7 @@ nmap <silent> <space>rn <Plug>(coc-rename)
 "スペースfmtでFormat
 nmap <silent> <space>fmt <Plug>(coc-format)
 
-let g:ctrlp_map = '<c-f>'
+let g:ctrlp_map = '<c-g>'
 let g:ctrlp_cmd = 'CtrlP'
 
 let g:ctrlp_working_path_mode = 'ra'
@@ -309,4 +314,3 @@ let g:ctrlp_custom_ignore = {
   \ 'file': '\v\.(exe|so|dll)$',
   \ 'link': 'some_bad_symbolic_links',
   \ }
-
